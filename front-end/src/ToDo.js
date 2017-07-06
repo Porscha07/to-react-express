@@ -3,31 +3,34 @@ import logo from './logo.svg';
 import './App.css';
 import $ from 'jquery';
 
-class App extends Component {
+class ToDo extends Component {
   constructor(props) {
     super(props);
     this.state ={
-      theClass:[]
+     theTasks:[]
     }
-    //make sure addStudent uses the current "this"
-    this.addStudent = this.addStudent.bind(this)
+    this.addTasks = this.addTasks.bind(this)
   }
+
+    //make sure addStudent uses the current "this"
+    
   //runs AFTER the first render
     componentDidMount() {
       //get JSON request to localhost:3000... that's where Express
-      $.getJSON('http://localhost:3000/getStudents', (studentsFromApi)=>{
+      $.getJSON('http://localhost:3000/getTasks', (taskFromApi)=>{
         //log the JSON response from Express
-        console.log(studentsFromApi)
+        console.log(taskFromApi)
         this.setState({
-          theClass: studentsFromApi
+          theTasks: taskFromApi
         })
       });
+    }
       // this.setState({
         //update the state...this will cause a re-render
         // theClass:[1,2,3,4]
       // })
-      addStudent(event){
-        var studentToAdd = event.target.parentNode.childNodes[0].value;
+      addTasks(event){
+        var taskToAdd = event.target.parentNode.childNodes[0].value;
         //var studentToAdd = document.getElementById('newStudent')
         // console.log(studentToAdd);
         //this is a post request, so we cant use $.getJson, only does get
@@ -35,11 +38,11 @@ class App extends Component {
         //$.ajax-is a promise which has a "done " method that wll run when ajax is back. It gets a param of whatever JSON was returned by the  API request inside that function. We update Ract(theClass) which .... a re-render, which updates the list because we are mapping...
         $.ajax({
           method:"POST",
-          url:"http://localhost:3000/addStudent",
-          data: {name: studentToAdd}
-        }).done((studentsArray)=>{
+          url:"http://localhost:3000/addTasks",
+          data: {name: taskToAdd}
+        }).done((tasksArray)=>{
           this.setState({
-            theClass:studentsArray
+            theTasks:tasksArray
           })
         })
       }
@@ -47,11 +50,11 @@ class App extends Component {
   
   render() {
     //create an array to dump into our return. It will contain  components or html tags.
-    var theClassArray = [];
+    var theTaskArray = [];
     //loop through our state var. the first time through it will be
-    this.state.theClass.map((mightyDuck,index)=>{
+    this.state.theTasks.map((mightyDuck,index)=>{
       //loop through our state v
-      theClassArray.push(<li key ={index}>{mightyDuck.name}</li>)
+      theTaskArray.push(<li key ={index}>{mightyDuck.task_name}</li>)
     });
     return (
       <div className="App">
@@ -63,15 +66,15 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <div className="add-box">
-          <input type="text" id="newStudent" />
-          <button onClick={this.addStudent}>Add Student</button>
+          <input type="text" id="newTask" />
+          <button onClick={this.addTasks}>Add Task</button>
         </div>
         <p>
-        {theClassArray}
+        {theTaskArray}
         </p>
       </div>
     );
   }
 }
 
-export default App;
+export default ToDo;
